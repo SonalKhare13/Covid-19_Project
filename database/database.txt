@@ -1,0 +1,67 @@
+--log in to postgress
+--Manually create a database called covid_db 
+
+
+--create Table: public.covid_cases
+-- DROP TABLE public.covid_cases;
+
+CREATE TABLE public.covid_cases
+(
+    county_id character varying(5) COLLATE pg_catalog."default",
+    state character varying(50) COLLATE pg_catalog."default",
+    county_name character varying(100) COLLATE pg_catalog."default",
+    occurence_date date,
+    confirmed bigint,
+    deaths bigint,
+    recovered bigint
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+ALTER TABLE public.covid_cases
+    OWNER to postgres;
+	
+-- Create Table: public.state_county_info
+-- DROP TABLE public.state_county_info;
+
+CREATE TABLE public.state_county_info
+(
+    state character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    county_id character varying(5) COLLATE pg_catalog."default" NOT NULL,
+    county_name character varying(100) COLLATE pg_catalog."default",
+    icu_beds bigint,
+    population bigint,
+    CONSTRAINT state_pkey PRIMARY KEY (state, county_id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.state_county_info
+    OWNER to postgres;
+	
+	
+--Manually import data from csv file covid_cases.csv into covid_cases table
+--Manually import data from csv file state_county_info.csv into covid_cases state_county_info	
+	
+	
+	
+---Create pk on covid cases this part after importing the data into the tables
+--ALTER TABLE public."covid_cases" ADD COLUMN "id" BIGSERIAL
+--PRIMARY KEY;
+
+
+
+-- Column: public.covid_cases.month
+
+-- ALTER TABLE public.covid_cases DROP COLUMN month;
+
+ALTER TABLE public.covid_cases
+    ADD COLUMN month character varying(50) COLLATE pg_catalog."default";
+	
+	update public.covid_cases
+	set month=EXTRACT(MONth from occurence_date);
+
+
